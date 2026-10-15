@@ -70,12 +70,21 @@ p{margin:0}
 .hero h1 em{font-style:normal;color:var(--amber)}
 .lead{margin-top:16px;max-width:52ch;font-size:clamp(16px,2vw,18px);color:var(--muted)}
 .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
-.vis{position:relative;width:100%;max-width:370px;aspect-ratio:1;margin-inline:auto;display:flex;align-items:center;justify-content:center}
-.hero-logo-box{position:relative;width:82%;aspect-ratio:1;border-radius:32px;overflow:hidden;box-shadow:0 20px 48px -12px rgba(12,74,138,.16),0 0 0 1px rgba(226,232,240,.9);background:#fff;display:flex;align-items:center;justify-content:center;transition:transform .3s ease}
-.hero-logo-box:hover{transform:scale(1.02)}
-.hero-logo-img{width:100%;height:100%;object-fit:cover}
-.pill{position:absolute;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:700;font-size:13.5px;box-shadow:0 8px 18px -12px rgba(10,20,50,.5);z-index:2}
-.pill.a{top:8%;right:2%}.pill.b{bottom:8%;right:2%}.pill.c{left:0;top:46%}
+.vis{position:relative;width:100%;max-width:390px;aspect-ratio:1;margin-inline:auto;display:flex;align-items:center;justify-content:center}
+.ring{position:absolute;inset:0;width:100%;height:100%;animation:spin 16s linear infinite;transform-origin:center center;pointer-events:none;z-index:1}
+@keyframes spin{to{transform:rotate(360deg)}}
+.streak{position:absolute;height:3.5px;border-radius:3px;background:var(--amber);z-index:1}
+.streak.s1{width:56px;left:-6px;top:23%}
+.streak.s2{width:36px;left:8px;top:30%;opacity:.65}
+.streak.s3{width:46px;right:-4px;bottom:30%;opacity:.85}
+.phone{position:absolute;left:50%;top:50%;width:45%;aspect-ratio:9/18.5;transform:translate(-50%,-50%) rotate(-6.5deg);border-radius:26px;background:#0B132B;padding:6px;box-shadow:0 22px 48px -10px rgba(12,74,138,.35),0 0 0 1px rgba(11,19,43,.2);z-index:2;transition:transform .3s ease;display:flex;flex-direction:column}
+.phone:hover{transform:translate(-50%,-50%) rotate(-3.5deg) scale(1.02)}
+.phone-notch{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:34px;height:6px;background:#0B132B;border-radius:999px;z-index:4}
+.phone-screen{position:relative;width:100%;height:100%;border-radius:20px;background:#FFFFFF;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:12px 6px;box-sizing:border-box;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.phone-screen-logo{width:98%;height:auto;max-height:90%;object-fit:contain;display:block}
+.phone-bar{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:32px;height:3px;background:#cbd5e1;border-radius:999px;z-index:3}
+.pill{position:absolute;padding:8px 16px;border-radius:999px;background:#FFFFFF;border:1px solid var(--line);font-weight:700;font-size:13.5px;color:var(--fg);box-shadow:0 8px 22px -6px rgba(12,74,138,.22);z-index:3;white-space:nowrap;user-select:none}
+.pill.a{top:8%;right:2%}.pill.b{bottom:9%;right:2%}.pill.c{left:-2%;top:48%}
 
 /* sections */
 .sec{padding-block:26px}
@@ -317,7 +326,7 @@ function home(){
     var n=prodsOf(c.id).length;
     return n?'<button class="cat" data-action="cat" data-id="'+esc(c.id)+'"><b>'+esc(c.name)+'</b><span>'+n+(n===1?' produto':' produtos')+'</span></button>':'<div class="cat soon"><b>'+esc(c.name)+'</b><span>Em breve</span></div>';
   }).join('');
-  return '<section class="hero"><div class="wrap hero-in"><div><span class="eyebrow">Compra · venda · troca</span><h1>Negocie rápido, <em>sem complicação</em>.</h1><p class="lead">Escolha o produto no catálogo e combine tudo direto com a nossa equipe pelo WhatsApp. Sem cadastro, sem checkout, sem enrolação.</p><div class="cta-row"><a class="btn primary" href="#catalogo">Ver catálogo</a><a class="btn wa" target="_blank" rel="noopener" href="'+esc(wa(S.settings.msgGeneral))+'">'+CHAT+'Falar no WhatsApp</a></div></div><div class="vis" aria-hidden="true"><div class="hero-logo-box"><img src="logo.jpg" alt="Logo Giro Rápido" class="hero-logo-img"></div><span class="pill a">Comprar</span><span class="pill b">Vender</span><span class="pill c">Trocar</span></div></div></section>'
+  return '<section class="hero"><div class="wrap hero-in"><div><span class="eyebrow">Compra · venda · troca</span><h1>Negocie rápido, <em>sem complicação</em>.</h1><p class="lead">Escolha o produto no catálogo e combine tudo direto com a nossa equipe pelo WhatsApp. Sem cadastro, sem checkout, sem enrolação.</p><div class="cta-row"><a class="btn primary" href="#catalogo">Ver catálogo</a><a class="btn wa" target="_blank" rel="noopener" href="'+esc(wa(S.settings.msgGeneral))+'">'+CHAT+'Falar no WhatsApp</a></div></div><div class="vis" aria-hidden="true"><span class="streak s1"></span><span class="streak s2"></span><span class="streak s3"></span><svg class="ring" viewBox="0 0 360 360" aria-hidden="true"><defs><linearGradient id="ringGrad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4F8DF9"/><stop offset="100%" stop-color="#2563EB"/></linearGradient><linearGradient id="ringGrad2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2563EB"/><stop offset="100%" stop-color="#1D4ED8"/></linearGradient></defs><path d="M180 26a154 154 0 0 1 146 104" fill="none" stroke="url(#ringGrad1)" stroke-width="16" stroke-linecap="round"/><path d="M344 110l-14 74-68-34z" fill="#2563EB"/><path d="M180 334a154 154 0 0 1-146-104" fill="none" stroke="url(#ringGrad2)" stroke-width="16" stroke-linecap="round"/><path d="M16 250l14-74 68 34z" fill="#1D4ED8"/></svg><div class="phone"><div class="phone-notch"></div><div class="phone-screen"><img src="logo.jpg" alt="Logo Giro Rápido" class="phone-screen-logo"><div class="phone-bar"></div></div></div><span class="pill a">Comprar</span><span class="pill b">Vender</span><span class="pill c">Trocar</span></div></div></section>'
   +'<section class="sec"><div class="wrap"><div class="sec-h"><h2>Categorias</h2><a class="link" href="#categorias">Ver todas</a></div><div class="cats">'+cats+'</div></div></section>'
   +'<section class="sec"><div class="wrap"><div class="sec-h"><h2>Em destaque</h2><a class="link" href="#catalogo">Ver catálogo completo</a></div>'+(feat.length?'<div class="grid">'+feat.map(card).join('')+'</div>':'<div class="empty"><h3>Os produtos chegam em breve</h3><p class="muted">Enquanto isso, fale com a equipe e conte o que você procura.</p><a class="btn wa" target="_blank" rel="noopener" href="'+esc(wa(S.settings.msgGeneral))+'">'+CHAT+'Chamar no WhatsApp</a></div>')+'</div></section>'
   +'<section class="sec"><div class="wrap"><div class="sec-h"><h2>Como funciona</h2></div><div class="steps"><div class="step"><span class="n">1</span><h3>Escolha</h3><p>Navegue pelo catálogo e abra o produto que chamou sua atenção.</p></div><div class="step"><span class="n">2</span><h3>Chame no WhatsApp</h3><p>O botão já abre a conversa com o nome do produto preenchido.</p></div><div class="step"><span class="n">3</span><h3>Combine direto</h3><p>Valores, troca e retirada são acertados com a equipe, na conversa.</p></div></div></div></section>'
