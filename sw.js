@@ -1,4 +1,4 @@
-const CACHE_NAME = 'giro-rapido-v3';
+const CACHE_NAME = 'giro-rapido-v8';
 const ASSETS_TO_CACHE = [
   '/',
   '/manifest.json',
