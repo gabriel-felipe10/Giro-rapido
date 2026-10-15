@@ -5,8 +5,13 @@
 <meta property="og:description" content="Compra, venda e troca de celulares e eletrônicos. Negocie rápido pelo WhatsApp.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#FFFFFF">
-<link rel="icon" type="image/jpeg" href="logo.jpg">
-<meta property="og:image" content="logo.jpg">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Giro Rápido">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta property="og:image" content="icon-512.png">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -288,11 +293,11 @@ function header(){
   if(canEdit===true)items.push(['admin','Administração']);
   var cur=route==='produto'?'catalogo':route;
   var nav=items.map(function(i){return '<a href="#'+i[0]+'"'+(cur===i[0]?' aria-current="page"':'')+'>'+i[1]+'</a>'}).join('');
-  return '<header class="top"><div class="wrap top-in"><a class="brand" href="#inicio" aria-label="Giro Rápido, página inicial"><img src="logo.jpg" alt="Logo Giro Rápido" class="brand-img"><span>Giro Rápido</span></a><a class="btn wa sm" target="_blank" rel="noopener" href="'+esc(wa(S.settings.msgGeneral))+'">'+CHAT+'<span>WhatsApp</span></a></div><nav class="wrap nav" aria-label="Principal">'+nav+'</nav></header>';
+  return '<header class="top"><div class="wrap top-in"><a class="brand" href="#inicio" aria-label="Giro Rápido, página inicial"><img src="icon-192.png" alt="Logo Giro Rápido" class="brand-img"><span>Giro Rápido</span></a><div style="display:flex;align-items:center;gap:8px"><button class="btn ghost sm pwa-btn" id="pwa-btn" style="display:none;padding:0 12px;font-size:13.5px;color:var(--accent);border-color:var(--accent)" title="Instalar aplicativo no aparelho">📲 <span>Instalar App</span></button><a class="btn wa sm" target="_blank" rel="noopener" href="'+esc(wa(S.settings.msgGeneral))+'">'+CHAT+'<span>WhatsApp</span></a></div></div><nav class="wrap nav" aria-label="Principal">'+nav+'</nav></header>';
 }
 function footer(){
   var c=pickContact();
-  return '<footer class="foot"><div class="wrap foot-in"><span>© Giro Rápido · Compra, venda e troca'+(c?' · '+esc(fmtPhone(c.number)):'')+'</span><nav aria-label="Rodapé"><a href="#catalogo">Catálogo</a><a href="#contato">Contato</a><a href="#admin">Área da loja</a></nav></div></footer>';
+  return '<footer class="foot"><div class="wrap foot-in"><span>© Giro Rápido · Compra, venda e troca'+(c?' · '+esc(fmtPhone(c.number)):'')+'</span><nav aria-label="Rodapé"><a href="#catalogo">Catálogo</a><a href="#contato">Contato</a><a href="#admin">Área da loja</a></nav></div><div class="wrap" style="text-align:center;padding:10px 0 4px"><button class="btn ghost sm pwa-btn" id="pwa-foot-btn" style="display:none">📲 Instalar aplicativo Giro Rápido</button></div></footer>';
 }
 function card(p){
   var seller=contactName(p);
@@ -465,7 +470,7 @@ function addPhotos(files){
 function buildDoc(){
   var style=$('#gr-style').textContent,script=$('#gr-script').textContent,fonts=$('#gr-fonts').outerHTML;
   var data=JSON.stringify(S).replace(/</g,'\\u003c');
-  return '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>'+RESET+'</style></head><body><title>'+TITLE+'</title><meta name="claude:viewport-fit-sides" content="cover">'+fonts+'<style id="gr-style">'+style+'</style><div id="app"></div><div id="toast" class="toast" role="status" aria-live="polite" hidden></div><script type="application/json" id="gr-data">'+data+'<\/script><script id="gr-script">'+script+'<\/script></body></html>';
+  return '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#FFFFFF"><link rel="manifest" href="manifest.json"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Giro Rápido"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><style>'+RESET+'</style></head><body><title>'+TITLE+'</title><meta name="claude:viewport-fit-sides" content="cover">'+fonts+'<style id="gr-style">'+style+'</style><div id="app"></div><div id="toast" class="toast" role="status" aria-live="polite" hidden></div><script type="application/json" id="gr-data">'+data+'<\/script><script id="gr-script">'+script+'<\/script></body></html>';
 }
 function publish(){
   if(busy==='publicando')return;
@@ -509,8 +514,11 @@ function render(){
   $('#app').innerHTML=header()+'<main id="main">'+m+'</main>'+footer();
   if(route==='catalogo')renderGrid();
   if(route==='admin')updateBar();
+  updatePwaBtns();
 }
 document.addEventListener('click',function(ev){
+  var pwaBtn=ev.target.closest&&ev.target.closest('.pwa-btn, #pwa-btn, #pwa-foot-btn');
+  if(pwaBtn){ev.preventDefault();triggerInstall();return}
   var a=ev.target.closest&&ev.target.closest('a[href^="#"]');
   if(a&&a.getAttribute('href').length>1&&!ev.defaultPrevented&&!ev.metaKey&&!ev.ctrlKey){ev.preventDefault();go(a.getAttribute('href').slice(1));return}
   var b=ev.target.closest&&ev.target.closest('[data-action]');if(!b)return;
@@ -574,6 +582,54 @@ document.addEventListener('change',function(ev){
     if(k){var d=digits(t.value);if(d.length===10||d.length===11)d='55'+d;k.number=d;t.value=fmtPhone(d);markDirty()}
   }
 });
+
+/* ---------- pwa ---------- */
+var deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',function(e){
+  e.preventDefault();
+  deferredPrompt=e;
+  updatePwaBtns();
+});
+window.addEventListener('appinstalled',function(){
+  deferredPrompt=null;
+  updatePwaBtns();
+  toast('Aplicativo Giro Rápido instalado com sucesso!');
+});
+function isIos(){
+  return /iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.MSStream;
+}
+function isInStandaloneMode(){
+  return ('standalone' in window.navigator&&window.navigator.standalone)||window.matchMedia('(display-mode: standalone)').matches;
+}
+function updatePwaBtns(){
+  var show=!isInStandaloneMode()&&(!!deferredPrompt||isIos());
+  var b1=document.getElementById('pwa-btn');
+  var b2=document.getElementById('pwa-foot-btn');
+  if(b1)b1.style.display=show?'inline-flex':'none';
+  if(b2)b2.style.display=show?'inline-flex':'none';
+}
+function triggerInstall(){
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(){
+      deferredPrompt=null;
+      updatePwaBtns();
+    });
+  }else if(isIos()){
+    toast('Para instalar no iPhone/iPad: toque em Compartilhar e depois em "Adicionar à Tela de Início".');
+  }else{
+    toast('Abra o menu do navegador e toque em "Instalar aplicativo" ou "Adicionar à tela inicial".');
+  }
+}
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('sw.js').then(function(reg){
+      console.log('PWA ServiceWorker ativo:',reg.scope);
+    }).catch(function(err){
+      console.log('Falha ao registrar ServiceWorker:',err);
+    });
+  });
+}
 
 /* ---------- boot ---------- */
 parseHash();
