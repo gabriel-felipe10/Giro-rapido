@@ -1,19 +1,25 @@
-const CACHE_NAME = 'giro-rapido-v1';
+const CACHE_NAME = 'giro-rapido-v3';
 const ASSETS_TO_CACHE = [
-  './',
-  'index.html',
-  'config.js',
-  'manifest.json',
-  'logo.jpg',
-  'icon-192.png',
-  'icon-512.png'
+  '/',
+  '/manifest.json',
+  '/logo.jpg',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/config.js'
 ];
 
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    }).then(() => self.skipWaiting())
+      return Promise.allSettled(
+        ASSETS_TO_CACHE.map((url) =>
+          cache.add(new Request(url, { cache: 'reload' })).catch((err) => {
+            console.warn('[SW] Falha ao cachear recurso inicial:', url, err);
+          })
+        )
+      );
+    })
   );
 });
 
@@ -35,26 +41,28 @@ self.addEventListener('fetch', (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
-  // Supabase API or non-GET: don't intercept with cache
+  // Bypass cache para chamadas à API do Supabase ou requisições não-GET
   if (req.method !== 'GET' || url.hostname.includes('supabase.co')) {
     return;
   }
 
-  // Network-first for HTML pages (so updates show immediately), cache fallback for offline
+  // Network-first para navegação / páginas HTML (para que atualizações apareçam na hora)
   if (req.mode === 'navigate' || req.headers.get('accept')?.includes('text/html')) {
     event.respondWith(
       fetch(req)
         .then((res) => {
-          const resClone = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
+          if (res && res.status === 200) {
+            const resClone = res.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
+          }
           return res;
         })
-        .catch(() => caches.match(req).then((cached) => cached || caches.match('./') || caches.match('index.html')))
+        .catch(() => caches.match(req).then((cached) => cached || caches.match('/')))
     );
     return;
   }
 
-  // Stale-while-revalidate for other assets
+  // Cache-first / stale-while-revalidate para arquivos estáticos
   event.respondWith(
     caches.match(req).then((cached) => {
       const fetchPromise = fetch(req)

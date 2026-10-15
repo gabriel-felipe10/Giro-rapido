@@ -1,22 +1,30 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Giro Rápido</title>
-<meta name="description" content="Giro Rápido: compra, venda e troca de celulares e eletrônicos. Escolha no catálogo e combine direto pelo WhatsApp.">
-<meta property="og:title" content="Giro Rápido">
-<meta property="og:description" content="Compra, venda e troca de celulares e eletrônicos. Negocie rápido pelo WhatsApp.">
-<meta property="og:type" content="website">
-<meta name="theme-color" content="#FFFFFF">
-<link rel="manifest" href="manifest.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Giro Rápido">
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
-<meta property="og:image" content="icon-512.png">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
-<meta name="claude:viewport-fit-sides" content="cover">
-<link id="gr-fonts" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Unbounded:wght@600;700&display=swap">
-<style id="gr-style">
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Giro Rápido</title>
+  <meta name="description" content="Giro Rápido: compra, venda e troca de celulares e eletrônicos. Escolha no catálogo e combine direto pelo WhatsApp.">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Giro Rápido">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <meta property="og:title" content="Giro Rápido">
+  <meta property="og:description" content="Compra, venda e troca de celulares e eletrônicos. Negocie rápido pelo WhatsApp.">
+  <meta property="og:image" content="/icon-512.png">
+  <meta property="og:type" content="website">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/config.js"></script>
+  <link id="gr-fonts" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Unbounded:wght@600;700&display=swap">
+  <style>
+    :root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+  </style>
+  <style id="gr-style">
 /* Layout: cabeçalho limpo com logo oficial, hero em duas colunas com destaque da marca, vitrine em grade de cartões. */
 :root{
   color-scheme: light;
@@ -217,6 +225,8 @@ textarea.inp{min-height:96px;resize:vertical}
 }
 @media (prefers-reduced-motion:reduce){.ring{animation:none}.btn{transition:none}html{scroll-behavior:auto}}
 </style>
+</head>
+<body>
 
 <div id="app"></div>
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
@@ -479,7 +489,7 @@ function addPhotos(files){
 function buildDoc(){
   var style=$('#gr-style').textContent,script=$('#gr-script').textContent,fonts=$('#gr-fonts').outerHTML;
   var data=JSON.stringify(S).replace(/</g,'\\u003c');
-  return '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#FFFFFF"><link rel="manifest" href="manifest.json"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Giro Rápido"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><style>'+RESET+'</style></head><body><title>'+TITLE+'</title><meta name="claude:viewport-fit-sides" content="cover">'+fonts+'<style id="gr-style">'+style+'</style><div id="app"></div><div id="toast" class="toast" role="status" aria-live="polite" hidden></div><script type="application/json" id="gr-data">'+data+'<\/script><script id="gr-script">'+script+'<\/script></body></html>';
+  return '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>'+TITLE+'</title><meta name="theme-color" content="#FFFFFF"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Giro Rápido"><link rel="manifest" href="/manifest.json"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png"><link rel="apple-touch-icon" href="/icon-192.png">'+fonts+'<style>'+RESET+'</style><style id="gr-style">'+style+'</style></head><body><div id="app"></div><div id="toast" class="toast" role="status" aria-live="polite" hidden></div><script type="application/json" id="gr-data">'+data+'<\/script><script id="gr-script">'+script+'<\/script></body></html>';
 }
 function publish(){
   if(busy==='publicando')return;
@@ -632,8 +642,9 @@ function triggerInstall(){
 }
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js').then(function(reg){
+    navigator.serviceWorker.register('/sw.js',{scope:'/'}).then(function(reg){
       console.log('PWA ServiceWorker ativo:',reg.scope);
+      if(reg.update)reg.update();
     }).catch(function(err){
       console.log('Falha ao registrar ServiceWorker:',err);
     });

@@ -2,29 +2,35 @@
   "name": "Giro Rápido",
   "short_name": "Giro Rápido",
   "description": "Giro Rápido: Compra, venda e troca de celulares e eletrônicos.",
-  "start_url": "./",
-  "id": "./",
-  "scope": "./",
+  "start_url": "/",
+  "id": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#FFFFFF",
-  "theme_color": "#0C4A8A",
+  "theme_color": "#FFFFFF",
   "categories": ["shopping", "business"],
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icon-512.png",
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icon-512.png",
+      "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
