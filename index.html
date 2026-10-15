@@ -251,7 +251,7 @@ if(!S||!S.settings){S={v:1,demo:false,settings:{mode:'primeiro',contacts:[],msgI
 var orig=JSON.stringify(S);
 var SB=null;
 try{var CFG=window.GR_CONFIG||{};if(window.supabase&&CFG.url&&CFG.anonKey&&CFG.url.indexOf('COLE')<0)SB=window.supabase.createClient(CFG.url,CFG.anonKey)}catch(e){SB=null}
-var dirty=false,canEdit=null,route='inicio',params={},gal=0,editing=null,confirmDel=null,adminTab='produtos',busy='';
+var dirty=false,canEdit=false,route='inicio',params={},gal=0,editing=null,confirmDel=null,adminTab='produtos',busy='';
 var F={q:'',cat:'',brand:'',seller:''};
 
 /* ---------- icons ---------- */
@@ -278,7 +278,7 @@ function contactName(pOrId){
   var c=(S.settings.contacts||[]).filter(function(x){return x.id===id})[0];
   return c?c.label:'';
 }
-function wa(msg,pOrId){var c=contactFor(pOrId);return c?'https://wa.me/'+digits(c.number)+'?text='+encodeURIComponent(msg):'#contato'}
+function wa(msg,pOrId){var c=contactFor(pOrId);return c?'https://wa.me/'+digits(c.number)+'?text='+encodeURIComponent(msg):'#catalogo'}
 function fill(t,p){return String(t||'').replace(/\{produto\}/g,p?p.name:'')}
 function catName(id){var c=S.categories.filter(function(x){return x.id===id})[0];return c?c.name:''}
 function prodsOf(id){return S.products.filter(function(p){return p.name&&(!id||p.categoryId===id)})}
@@ -296,7 +296,7 @@ function toast(msg){var t=$('#toast');t.textContent=msg;t.hidden=false;clearTime
 function parseHash(){
   var h='';try{h=location.hash.slice(1)}catch(e){}
   if(h.indexOf('produto-')===0){route='produto';params.id=h.slice(8)}
-  else if(['inicio','catalogo','categorias','contato','admin'].indexOf(h)>-1)route=h;
+  else if(['inicio','catalogo','categorias','admin'].indexOf(h)>-1)route=h;
   else route='inicio';
 }
 function go(r){
@@ -308,15 +308,15 @@ window.addEventListener('hashchange',function(){parseHash();gal=0;render();windo
 
 /* ---------- views ---------- */
 function header(){
-  var items=[['inicio','Início'],['catalogo','Catálogo'],['categorias','Categorias'],['contato','Contato']];
-  if(canEdit===true)items.push(['admin','Administração']);
+  var items=[['inicio','Início'],['catalogo','Catálogo'],['categorias','Categorias']];
+  if(canEdit===true)items.push(['admin','🔒 Administração']);
   var cur=route==='produto'?'catalogo':route;
   var nav=items.map(function(i){return '<a href="#'+i[0]+'"'+(cur===i[0]?' aria-current="page"':'')+'>'+i[1]+'</a>'}).join('');
   return '<header class="top"><div class="wrap top-in"><a class="brand" href="#inicio" aria-label="Giro Rápido, página inicial"><img src="icon-192.png" alt="Logo Giro Rápido" class="brand-img"><span>Giro Rápido</span></a><div style="display:flex;align-items:center;gap:8px"><button class="btn ghost sm pwa-btn" id="pwa-btn" style="display:none;padding:0 12px;font-size:13.5px;color:var(--accent);border-color:var(--accent)" title="Instalar aplicativo no aparelho">📲 <span>Instalar App</span></button><a class="btn wa sm" target="_blank" rel="noopener" href="'+esc(wa(S.settings.msgGeneral))+'">'+CHAT+'<span>WhatsApp</span></a></div></div><nav class="wrap nav" aria-label="Principal">'+nav+'</nav></header>';
 }
 function footer(){
   var c=pickContact();
-  return '<footer class="foot"><div class="wrap foot-in"><span>© Giro Rápido · Compra, venda e troca'+(c?' · '+esc(fmtPhone(c.number)):'')+'</span><nav aria-label="Rodapé"><a href="#catalogo">Catálogo</a><a href="#contato">Contato</a><a href="#admin">Área da loja</a></nav></div><div class="wrap" style="text-align:center;padding:10px 0 4px"><button class="btn ghost sm pwa-btn" id="pwa-foot-btn" style="display:none">📲 Instalar aplicativo Giro Rápido</button></div></footer>';
+  return '<footer class="foot"><div class="wrap foot-in"><span>© Giro Rápido · Compra, venda e troca'+(c?' · '+esc(fmtPhone(c.number)):'')+'</span><nav aria-label="Rodapé"><a href="#inicio">Início</a><a href="#catalogo">Catálogo</a><a href="#categorias">Categorias</a><a href="#admin" style="opacity:.65;font-size:12.5px" title="Área exclusiva da administração">🔒 Área restrita</a></nav></div><div class="wrap" style="text-align:center;padding:10px 0 4px"><button class="btn ghost sm pwa-btn" id="pwa-foot-btn" style="display:none">📲 Instalar aplicativo Giro Rápido</button></div></footer>';
 }
 function card(p){
   var tags='<span class="tag">'+esc(p.brand||catName(p.categoryId)||'Produto')+'</span>'
@@ -385,22 +385,14 @@ function product(){
   var paras=String(p.description||'').split(/\n+/).filter(Boolean).map(function(t){return '<p>'+esc(t)+'</p>'}).join('');
   return '<div class="wrap"><nav class="crumbs" aria-label="Você está em"><a href="#catalogo">Catálogo</a> / '+esc(catName(p.categoryId)||'Produto')+'</nav><div class="pd"><div><div class="pd-main"><img src="'+esc(ph[gal])+'" alt="'+esc(p.name)+(ph.length>1?', foto '+(gal+1):'')+'"></div>'+(ph.length>1?'<div class="thumbs">'+ph.map(function(u,i){return '<button class="thumb" data-action="gal" data-i="'+i+'" aria-label="Ver foto '+(i+1)+'"'+(i===gal?' aria-current="true"':'')+'><img src="'+esc(u)+'" alt=""></button>'}).join('')+'</div>':'')+((p.photos&&p.photos.length)?'':'<p class="note">Foto em breve. Peça mais imagens pelo WhatsApp.</p>')+'</div><div><div class="tags"><span class="tag">'+esc(p.brand||'Produto')+'</span>'+(p.condition?'<span class="tag n">'+esc(p.condition)+'</span>':'')+'</div><h1>'+esc(p.name)+'</h1><div class="body">'+paras+'</div>'+(specs.length?'<dl class="specs">'+specs.map(function(s){return '<dt>'+s[0]+'</dt><dd>'+esc(s[1])+'</dd>'}).join('')+'</dl>':'')+'<div class="pd-cta"><a class="btn wa block" target="_blank" rel="noopener" href="'+esc(wa(fill(S.settings.msgInterest,p), p))+'">'+CHAT+'Tenho interesse</a><a class="btn ghost block" target="_blank" rel="noopener" href="'+esc(wa(fill(S.settings.msgTrade,p), p))+'">Quero trocar o meu</a></div><p class="note">Valores e condições são combinados direto com a equipe pelo WhatsApp.</p></div></div>'+(rel.length?'<section class="sec" style="padding-bottom:30px"><div class="sec-h"><h2>Outros produtos</h2></div><div class="grid">'+rel.map(card).join('')+'</div></section>':'')+'</div>';
 }
-function contact(){
-  var a=activeContacts();
-  var boxes=a.length?a.map(function(c){
-    return '<div class="box"><span class="muted">Atendimento WhatsApp</span><span class="num" id="num-'+esc(c.id)+'">'+esc(fmtPhone(c.number))+'</span><div class="row"><a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/'+digits(c.number)+'?text='+encodeURIComponent(S.settings.msgGeneral)+'">'+CHAT+'Abrir conversa</a><button class="btn ghost" data-action="copy" data-n="'+esc(c.id)+'">Copiar número</button></div></div>';
-  }).join(''):'<div class="box"><p>O número de atendimento ainda não foi configurado.</p></div>';
-  return '<div class="wrap"><div class="page-h"><h1>Contato</h1><p>Todo o atendimento é feito pelo WhatsApp. Conte o que você procura e a equipe responde por lá.</p></div><div class="ct-grid" style="padding-block:14px">'+boxes+'</div><div class="sec"><div class="sec-h"><h2>Sobre o que você quer falar?</h2></div><div class="reasons"><a class="btn primary" target="_blank" rel="noopener" href="'+esc(wa('Olá! Quero comprar um produto da Giro Rápido. Pode me ajudar?'))+'">Quero comprar</a><a class="btn primary" target="_blank" rel="noopener" href="'+esc(wa(S.settings.msgSell))+'">Quero vender</a><a class="btn primary" target="_blank" rel="noopener" href="'+esc(wa(S.settings.msgSwap))+'">Quero trocar</a></div></div><p class="note" style="padding-bottom:32px">Se o botão não abrir o WhatsApp no seu aparelho, copie o número acima e chame a equipe diretamente.</p></div>';
-}
-
 /* ---------- admin ---------- */
 function sizeKB(){return Math.round(new Blob([JSON.stringify(S)]).size/1024)}
 function admin(){
-  if(canEdit!==true)return '<div class="wrap"><div class="page-h"><h1>Área da loja</h1><p>Entre com o e-mail e a senha de administrador para gerenciar produtos, categorias e números.</p></div><form class="panel" style="max-width:420px;margin:14px 0 30px" data-login><div class="field"><label for="lg-email">E-mail</label><input class="inp" id="lg-email" type="email" autocomplete="username" required></div><div class="field"><label for="lg-pass">Senha</label><input class="inp" id="lg-pass" type="password" autocomplete="current-password" required></div><button class="btn primary" type="submit">Entrar</button>'+(SB?'':'<p class="note">Supabase ainda não configurado (config.js).</p>')+'</form></div>';
+  if(canEdit!==true)return '<div class="wrap"><div class="page-h"><h1>Painel do Administrador</h1><p>Acesso exclusivo para gerenciar o catálogo, produtos e vendedores. Digite seu e-mail e senha cadastrados.</p></div><form class="panel" style="max-width:420px;margin:14px 0 30px" data-login><div class="field"><label for="lg-email">E-mail</label><input class="inp" id="lg-email" type="email" autocomplete="username" placeholder="seu@email.com" required></div><div class="field"><label for="lg-pass">Senha</label><input class="inp" id="lg-pass" type="password" autocomplete="current-password" placeholder="Sua senha" required></div><button class="btn primary" type="submit" style="width:100%">Entrar no painel</button>'+(SB?'':'<p class="note" style="color:var(--danger)">Supabase ainda não configurado (config.js).</p>')+'</form></div>';
   var tabs=[['produtos','Produtos'],['categorias','Categorias'],['contato','Vendedores / Contatos']];
   var body=adminTab==='produtos'?adminProducts():adminTab==='categorias'?adminCats():adminContact();
   var flash='';try{if(sessionStorage.getItem('gr_flash')){flash='<div class="alert ok" role="status">Alterações publicadas. O site já está atualizado para todos.</div>';sessionStorage.removeItem('gr_flash')}}catch(e){}
-  return '<div class="wrap"><div class="page-h"><h1>Administração</h1><p>Adicione, edite ou remova produtos, categorias e vendedores. As alterações só aparecem para os clientes depois de publicar.</p></div>'+flash+(canEdit===null?'<div class="alert" style="margin-top:12px">Não foi possível confirmar sua permissão de edição. Você pode editar aqui, mas só consegue publicar com a conta da loja.</div>':'')+'<div class="tabs" role="tablist">'+tabs.map(function(t){return '<button class="tab" role="tab" data-action="tab" data-t="'+t[0]+'" aria-selected="'+(adminTab===t[0])+'">'+t[1]+'</button>'}).join('')+'</div>'+body+'<div class="pubbar" id="pubbar" hidden><span id="pubmsg"></span><button class="btn ghost sm" data-action="discard">Descartar</button><button class="btn wa sm" data-action="publish" id="pubbtn">Publicar alterações</button></div><p class="note" style="padding-bottom:36px"><button class="btn ghost sm" data-action="logout">Sair da administração</button></p></div>';
+  return '<div class="wrap"><div class="page-h" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px"><div><h1>Administração</h1><p>Adicione, edite ou remova produtos, categorias e vendedores.</p></div><button class="btn ghost sm" data-action="logout" style="border-color:var(--line)">🚪 Sair da conta</button></div>'+flash+'<div class="tabs" role="tablist">'+tabs.map(function(t){return '<button class="tab" role="tab" data-action="tab" data-t="'+t[0]+'" aria-selected="'+(adminTab===t[0])+'">'+t[1]+'</button>'}).join('')+'</div>'+body+'<div class="pubbar" id="pubbar" hidden><span id="pubmsg"></span><button class="btn ghost sm" data-action="discard">Descartar</button><button class="btn wa sm" data-action="publish" id="pubbtn">Publicar alterações</button></div><p class="note" style="padding-bottom:36px"><button class="btn ghost sm" data-action="logout">Sair da administração</button></p></div>';
 }
 function adminProducts(){
   var demo=S.demo&&S.products.some(function(p){return p.demo});
@@ -518,12 +510,20 @@ function login(){
     canEdit=true;render();
   }).catch(function(err){console.error('Login error:', err);toast('Não foi possível entrar agora.')});
 }
-function logout(){if(SB)SB.auth.signOut().then(function(){canEdit=false;dirty=false;render()})}
+function logout(){
+  canEdit=false;dirty=false;
+  try{
+    sessionStorage.clear();
+    for(var k in localStorage){if(k.indexOf('sb-')===0||k.indexOf('supabase')>=0)localStorage.removeItem(k)}
+  }catch(e){}
+  if(SB){SB.auth.signOut().finally(function(){canEdit=false;toast('Você saiu da administração.');render();})}
+  else{canEdit=false;toast('Você saiu da administração.');render();}
+}
 
 /* ---------- render + events ---------- */
 function render(){
   var m;
-  switch(route){case 'catalogo':m=catalog();break;case 'categorias':m=categories();break;case 'produto':m=product();break;case 'contato':m=contact();break;case 'admin':m=admin();break;default:m=home()}
+  switch(route){case 'catalogo':m=catalog();break;case 'categorias':m=categories();break;case 'produto':m=product();break;case 'admin':m=admin();break;default:m=home()}
   $('#app').innerHTML=header()+'<main id="main">'+m+'</main>'+footer();
   if(route==='catalogo')renderGrid();
   if(route==='admin')updateBar();
