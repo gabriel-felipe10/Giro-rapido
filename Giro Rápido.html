@@ -5,19 +5,12 @@
 <style id="gr-style">
 /* Layout: cabeçalho fixo com navegação em pílulas, hero em duas colunas (texto + anel giratório), vitrine em grade de cartões. */
 :root{
+  color-scheme: light;
   --bg:#F3F6FB; --surface:#FFFFFF; --fg:#0E1B2C; --muted:#56647A; --line:#DCE2EE;
   --accent:#1747E6; --accent-fg:#FFFFFF; --accent-soft:#E4EBFF; --amber:#FFB81C;
   --wa:#0B7F43; --wa-fg:#FFFFFF; --danger:#B42318; --danger-soft:#FDE8E6; --ok-soft:#DFF5E8;
   --font-display:'Unbounded',system-ui,sans-serif; --font-body:'Instrument Sans',system-ui,sans-serif;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0A111F; --surface:#121B2D; --fg:#E8EDF7; --muted:#98A5BC; --line:#25304A;
-  --accent:#7B9CFF; --accent-fg:#08112B; --accent-soft:#1A2748; --amber:#FFC53D;
-  --wa:#1FA85C; --wa-fg:#04150B; --danger:#FF8A80; --danger-soft:#3A1B1B; --ok-soft:#12301F; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0A111F; --surface:#121B2D; --fg:#E8EDF7; --muted:#98A5BC; --line:#25304A;
-  --accent:#7B9CFF; --accent-fg:#08112B; --accent-soft:#1A2748; --amber:#FFC53D;
-  --wa:#1FA85C; --wa-fg:#04150B; --danger:#FF8A80; --danger-soft:#3A1B1B; --ok-soft:#12301F; color-scheme:dark}
 
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth}
